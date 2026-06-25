@@ -6,12 +6,7 @@
 ![Terraform](https://img.shields.io/badge/Terraform-1.7%2B-7B42BC?logo=terraform&logoColor=white)
 ![Azure](https://img.shields.io/badge/Azure-Container%20Apps-0078D4?logo=microsoftazure&logoColor=white)
 ![Licença](https://img.shields.io/badge/Licen%C3%A7a-Source--available-orange)
-
-<!--
-Após publicar no GitHub, substitua OWNER pelo seu usuário ou organização e
-descomente para exibir o status do CI:
-[![CI](https://github.com/OWNER/MergeDuo/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/MergeDuo/actions/workflows/ci.yml)
--->
+[![CI](https://github.com/gmarquessousa/MergeDuo/actions/workflows/ci.yml/badge.svg)](https://github.com/gmarquessousa/MergeDuo/actions/workflows/ci.yml)
 
 MergeDuo é um projeto de portfólio para gestão financeira compartilhada. O app
 combina lançamentos, cartões, regras fixas, agregados mensais/anuais e fluxo de
@@ -76,15 +71,18 @@ Leia a documentação completa em [docs/architecture.md](docs/architecture.md).
 
 ## Rodar Localmente
 
-Pré-requisitos:
+Pré-requisitos: Node.js 22.x, .NET SDK 8.x, Git e uma connection string do
+Cosmos DB (conta real ou emulador). Para infra/deploy: Azure CLI e Terraform 1.7+.
 
-- Node.js 22.x
-- .NET SDK 8.x
-- Terraform 1.7+
-- Docker, opcional para imagens locais
-- Azure CLI, apenas para deploy/infra
+1. Clone o repositório e confie no certificado HTTPS de desenvolvimento:
 
-Frontend:
+```powershell
+git clone https://github.com/gmarquessousa/MergeDuo.git
+cd MergeDuo
+dotnet dev-certs https --trust
+```
+
+2. Frontend — instale e defina o `VITE_GOOGLE_CLIENT_ID` no `.env.local`:
 
 ```powershell
 cd MergeDuo.React
@@ -93,15 +91,17 @@ Copy-Item .env.example .env.local
 npm run dev
 ```
 
-APIs:
+3. APIs — use o profile `https` para casar com as portas esperadas pelo frontend:
 
 ```powershell
-dotnet run --project MergeDuo.Microservices/MergeDuo.Identity/src/MergeDuo.Identity.Api
-dotnet run --project MergeDuo.Microservices/MergeDuo.Transactions/src/MergeDuo.Transactions.Api
+dotnet run --launch-profile https --project MergeDuo.Microservices/MergeDuo.Identity/src/MergeDuo.Identity.Api
+dotnet run --launch-profile https --project MergeDuo.Microservices/MergeDuo.Transactions/src/MergeDuo.Transactions.Api
+# ...demais serviços
 ```
 
-Cada microsserviço tem seu README com endpoints, configuração e comandos. O guia
-de onboarding está em [docs/local-development.md](docs/local-development.md).
+O app abre em http://localhost:5173. O passo a passo completo — criar o cliente
+OAuth do Google, portas de cada serviço, variáveis de ambiente e troubleshooting
+— está em **[docs/local-development.md](docs/local-development.md)**.
 
 ## Validação
 
@@ -153,37 +153,24 @@ histórico Git antes de tornar o repositório público.
 
 ## Deploy
 
-O Terraform cria a base de infraestrutura Azure. Os workflows de deploy são
-manuais e usam GitHub Environment `production` com OIDC:
+Visão geral do deploy no Azure (guia completo em
+**[docs/deploy.md](docs/deploy.md)**):
 
-Secrets:
+1. **Infra** — `terraform apply` em `MergeDuo.Terraform` provisiona Container
+   Apps, Cosmos, Storage, ACR, Log Analytics e as identidades OIDC + RBAC.
+2. **GitHub Environment `production`** com OIDC (valores de `terraform output`):
+   - Secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`
+   - Vars compartilhadas: `ACR_NAME`, `ACR_LOGIN_SERVER`, `AZURE_RESOURCE_GROUP`
+   - Vars do React: `WEB_ACA_NAME`, `WEB_IMAGE_REPOSITORY`, `VITE_GOOGLE_CLIENT_ID`
+3. **Google OAuth** — registre o redirect
+   `terraform output -raw google_oauth_redirect_uri`.
+4. **Segredos de runtime** nos Container Apps:
+   [docs/azure-runtime-configuration.md](docs/azure-runtime-configuration.md).
+5. **Workflows** de deploy manuais (`workflow_dispatch`) publicam as imagens no
+   ACR e atualizam os Apps.
 
-```text
-AZURE_CLIENT_ID
-AZURE_TENANT_ID
-AZURE_SUBSCRIPTION_ID
-```
-
-Vars compartilhadas:
-
-```text
-ACR_NAME
-ACR_LOGIN_SERVER
-AZURE_RESOURCE_GROUP
-```
-
-Vars do React:
-
-```text
-WEB_ACA_NAME
-WEB_IMAGE_REPOSITORY
-VITE_GOOGLE_CLIENT_ID
-```
-
-Veja detalhes em [MergeDuo.Terraform/README.md](MergeDuo.Terraform/README.md).
-Mantenha os deploys manuais até configurar todas as variáveis e secrets de
-runtime nos Container Apps. O procedimento sem Key Vault está em
-[docs/azure-runtime-configuration.md](docs/azure-runtime-configuration.md).
+Detalhes da infraestrutura em
+[MergeDuo.Terraform/README.md](MergeDuo.Terraform/README.md).
 
 ## Desenvolvimento com IA
 
