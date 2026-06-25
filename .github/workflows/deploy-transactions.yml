@@ -1,0 +1,21 @@
+name: Deploy Transactions
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-container-app.yml
+    secrets: inherit
+    with:
+      display_name: Transactions
+      aca_kind: app
+      aca_name: aca-mergeduo-transactions
+      image_repository: mergeduo-transactions
+      docker_context: MergeDuo.Microservices/MergeDuo.Transactions
+      dockerfile: MergeDuo.Microservices/MergeDuo.Transactions/src/MergeDuo.Transactions.Api/Dockerfile
+      solution_path: MergeDuo.Microservices/MergeDuo.Transactions/MergeDuo.Transactions.sln

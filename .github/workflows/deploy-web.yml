@@ -1,0 +1,170 @@
+name: Deploy React Web
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-web-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy React Web
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      ACR_LOGIN_SERVER: ${{ vars.ACR_LOGIN_SERVER }}
+      ACR_NAME: ${{ vars.ACR_NAME }}
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      WEB_ACA_NAME: ${{ vars.WEB_ACA_NAME }}
+      WEB_IMAGE_REPOSITORY: ${{ vars.WEB_IMAGE_REPOSITORY }}
+      VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+      VITE_APP_VERSION: ${{ github.sha }}
+      VITE_USE_CROSS_ORIGIN_APIS: "false"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate deployment variables
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_variables=(
+            ACR_LOGIN_SERVER
+            ACR_NAME
+            AZURE_RESOURCE_GROUP
+            WEB_ACA_NAME
+            WEB_IMAGE_REPOSITORY
+            VITE_GOOGLE_CLIENT_ID
+          )
+
+          missing_variables=()
+          for variable_name in "${required_variables[@]}"; do
+            if [[ -z "${!variable_name:-}" ]]; then
+              missing_variables+=("$variable_name")
+            fi
+          done
+
+          if (( ${#missing_variables[@]} > 0 )); then
+            echo "::error::Missing GitHub environment variable(s): ${missing_variables[*]}"
+            exit 1
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: MergeDuo.React/package-lock.json
+
+      - name: Install dependencies
+        working-directory: MergeDuo.React
+        run: npm ci
+
+      - name: Build
+        working-directory: MergeDuo.React
+        run: npm run build
+
+      - name: Test
+        working-directory: MergeDuo.React
+        run: npm run test --if-present
+
+      - name: Compute deployment metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "IMAGE=$ACR_LOGIN_SERVER/$WEB_IMAGE_REPOSITORY:$GITHUB_SHA" >> "$GITHUB_ENV"
+          echo "REVISION_SUFFIX=${GITHUB_SHA::12}-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Ensure Container Apps CLI support
+        shell: bash
+        run: |
+          set -euo pipefail
+          az extension add --name containerapp --upgrade --only-show-errors || true
+
+      - name: Login to ACR
+        shell: bash
+        run: |
+          set -euo pipefail
+          az acr login --name "$ACR_NAME"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: MergeDuo.React
+          file: MergeDuo.React/Dockerfile
+          push: true
+          platforms: linux/amd64
+          provenance: false
+          sbom: false
+          tags: ${{ env.IMAGE }}
+          build-args: |
+            VITE_GOOGLE_CLIENT_ID=${{ env.VITE_GOOGLE_CLIENT_ID }}
+            VITE_APP_VERSION=${{ env.VITE_APP_VERSION }}
+            VITE_USE_CROSS_ORIGIN_APIS=${{ env.VITE_USE_CROSS_ORIGIN_APIS }}
+          labels: |
+            org.opencontainers.image.source=${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Configure React Container App registry
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          IDENTITY_ID=$(az resource show \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --name "$WEB_ACA_NAME" \
+            --resource-type "Microsoft.App/containerApps" \
+            --query "identity.userAssignedIdentities | keys(@)[0]" \
+            --output tsv)
+
+          if [[ -z "$IDENTITY_ID" || "$IDENTITY_ID" == "null" ]]; then
+            echo "::error::No user-assigned identity found on $WEB_ACA_NAME"
+            exit 1
+          fi
+
+          az containerapp registry set \
+            --name "$WEB_ACA_NAME" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --server "$ACR_LOGIN_SERVER" \
+            --identity "$IDENTITY_ID"
+
+      - name: Update React Container App
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          az containerapp update \
+            --name "$WEB_ACA_NAME" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --image "$IMAGE" \
+            --revision-suffix "$REVISION_SUFFIX"
+
+      - name: Deployment summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "### MergeDuo React deploy"
+            echo ""
+            echo "- Target: \`$WEB_ACA_NAME\`"
+            echo "- Resource group: \`$AZURE_RESOURCE_GROUP\`"
+            echo "- Image: \`$IMAGE\`"
+            echo "- Dockerfile: \`MergeDuo.React/Dockerfile\`"
+          } >> "$GITHUB_STEP_SUMMARY"

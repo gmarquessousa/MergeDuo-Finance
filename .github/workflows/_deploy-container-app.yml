@@ -1,0 +1,215 @@
+name: Deploy Container App target
+
+on:
+  workflow_call:
+    inputs:
+      display_name:
+        required: true
+        type: string
+      aca_kind:
+        required: true
+        type: string
+      aca_name:
+        required: true
+        type: string
+      image_repository:
+        required: true
+        type: string
+      docker_context:
+        required: true
+        type: string
+      dockerfile:
+        required: true
+        type: string
+      solution_path:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    name: Build and deploy ${{ inputs.display_name }}
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: deploy-${{ inputs.aca_name }}-${{ github.ref }}
+      cancel-in-progress: false
+    env:
+      ACA_KIND: ${{ inputs.aca_kind }}
+      ACA_NAME: ${{ inputs.aca_name }}
+      ACR_LOGIN_SERVER: ${{ vars.ACR_LOGIN_SERVER }}
+      ACR_NAME: ${{ vars.ACR_NAME }}
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      DOCKER_BUILD_CONTEXT: ${{ inputs.docker_context }}
+      DOCKERFILE: ${{ inputs.dockerfile }}
+      IMAGE_REPOSITORY: ${{ inputs.image_repository }}
+      SOLUTION_PATH: ${{ inputs.solution_path }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate deployment inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          missing=()
+          for variable in ACR_NAME ACR_LOGIN_SERVER AZURE_RESOURCE_GROUP ACA_NAME IMAGE_REPOSITORY DOCKER_BUILD_CONTEXT DOCKERFILE SOLUTION_PATH; do
+            if [[ -z "${!variable:-}" ]]; then
+              missing+=("$variable")
+            fi
+          done
+
+          if (( ${#missing[@]} > 0 )); then
+            printf '::error::Missing required variable(s): %s\n' "${missing[*]}"
+            exit 1
+          fi
+
+          if [[ "$ACA_KIND" != "app" && "$ACA_KIND" != "job" ]]; then
+            echo "::error::ACA_KIND must be 'app' or 'job'. Current value: $ACA_KIND"
+            exit 1
+          fi
+
+          if [[ ! -d "$DOCKER_BUILD_CONTEXT" ]]; then
+            echo "::error::Docker context does not exist: $DOCKER_BUILD_CONTEXT"
+            exit 1
+          fi
+
+          if [[ ! -f "$DOCKERFILE" ]]; then
+            echo "::error::Dockerfile does not exist: $DOCKERFILE"
+            exit 1
+          fi
+
+          if [[ ! -f "$SOLUTION_PATH" ]]; then
+            echo "::error::Solution does not exist: $SOLUTION_PATH"
+            exit 1
+          fi
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore "$SOLUTION_PATH"
+
+      - name: Test
+        run: dotnet test "$SOLUTION_PATH" --configuration Release --no-restore
+
+      - name: Compute deployment metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "IMAGE=$ACR_LOGIN_SERVER/$IMAGE_REPOSITORY:$GITHUB_SHA" >> "$GITHUB_ENV"
+          echo "REVISION_SUFFIX=${GITHUB_SHA::12}-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Ensure Container Apps CLI support
+        shell: bash
+        run: |
+          set -euo pipefail
+          az extension add --name containerapp --upgrade --only-show-errors || true
+
+      - name: Login to ACR
+        shell: bash
+        run: |
+          set -euo pipefail
+          az acr login --name "$ACR_NAME"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.DOCKER_BUILD_CONTEXT }}
+          file: ${{ env.DOCKERFILE }}
+          push: true
+          platforms: linux/amd64
+          provenance: false
+          sbom: false
+          tags: ${{ env.IMAGE }}
+          labels: |
+            org.opencontainers.image.source=${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Configure Azure Container Apps registry
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "$ACA_KIND" == "app" ]]; then
+            RESOURCE_TYPE="Microsoft.App/containerApps"
+          else
+            RESOURCE_TYPE="Microsoft.App/jobs"
+          fi
+
+          IDENTITY_ID=$(az resource show \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --name "$ACA_NAME" \
+            --resource-type "$RESOURCE_TYPE" \
+            --query "identity.userAssignedIdentities | keys(@)[0]" \
+            --output tsv)
+
+          if [[ -z "$IDENTITY_ID" || "$IDENTITY_ID" == "null" ]]; then
+            echo "::error::No user-assigned identity found on $ACA_NAME"
+            exit 1
+          fi
+
+          if [[ "$ACA_KIND" == "app" ]]; then
+            az containerapp registry set \
+              --name "$ACA_NAME" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --server "$ACR_LOGIN_SERVER" \
+              --identity "$IDENTITY_ID"
+          else
+            az containerapp job registry set \
+              --name "$ACA_NAME" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --server "$ACR_LOGIN_SERVER" \
+              --identity "$IDENTITY_ID"
+          fi
+
+      - name: Update Azure Container Apps target
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "$ACA_KIND" == "app" ]]; then
+            az containerapp update \
+              --name "$ACA_NAME" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --image "$IMAGE" \
+              --revision-suffix "$REVISION_SUFFIX"
+          else
+            az containerapp job update \
+              --name "$ACA_NAME" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --image "$IMAGE"
+          fi
+
+      - name: Deployment summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "### MergeDuo deploy"
+            echo ""
+            echo "- Service: \`${{ inputs.display_name }}\`"
+            echo "- Kind: \`$ACA_KIND\`"
+            echo "- Target: \`$ACA_NAME\`"
+            echo "- Resource group: \`$AZURE_RESOURCE_GROUP\`"
+            echo "- Image: \`$IMAGE\`"
+            echo "- Docker context: \`$DOCKER_BUILD_CONTEXT\`"
+            echo "- Dockerfile: \`$DOCKERFILE\`"
+          } >> "$GITHUB_STEP_SUMMARY"

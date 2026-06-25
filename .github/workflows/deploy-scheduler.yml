@@ -1,0 +1,21 @@
+name: Deploy Scheduler
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-container-app.yml
+    secrets: inherit
+    with:
+      display_name: Scheduler
+      aca_kind: job
+      aca_name: acaj-mergeduo-scheduler
+      image_repository: mergeduo-scheduler
+      docker_context: MergeDuo.Microservices/MergeDuo.Scheduler
+      dockerfile: MergeDuo.Microservices/MergeDuo.Scheduler/src/MergeDuo.Scheduler.Job/Dockerfile
+      solution_path: MergeDuo.Microservices/MergeDuo.Scheduler/MergeDuo.Scheduler.sln

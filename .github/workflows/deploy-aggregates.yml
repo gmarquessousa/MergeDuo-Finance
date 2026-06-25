@@ -1,0 +1,21 @@
+name: Deploy Aggregates
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-container-app.yml
+    secrets: inherit
+    with:
+      display_name: Aggregates
+      aca_kind: app
+      aca_name: aca-mergeduo-aggregates
+      image_repository: mergeduo-aggregates
+      docker_context: MergeDuo.Microservices/MergeDuo.Aggregates
+      dockerfile: MergeDuo.Microservices/MergeDuo.Aggregates/src/MergeDuo.Aggregates.Api/Dockerfile
+      solution_path: MergeDuo.Microservices/MergeDuo.Aggregates/MergeDuo.Aggregates.sln

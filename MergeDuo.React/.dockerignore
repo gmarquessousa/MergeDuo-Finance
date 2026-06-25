@@ -1,0 +1,16 @@
+node_modules
+dist
+deploy-package
+coverage
+.vite
+.DS_Store
+npm-debug.log*
+*.local
+**/.env
+**/.env.*
+!**/.env.example
+**/secrets.json
+**/*.pfx
+**/*.pem
+**/*.key
+**/*.p12

@@ -1,0 +1,21 @@
+name: Deploy Partnership
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-container-app.yml
+    secrets: inherit
+    with:
+      display_name: Partnership
+      aca_kind: app
+      aca_name: aca-mergeduo-partnership
+      image_repository: mergeduo-partnership
+      docker_context: MergeDuo.Microservices/MergeDuo.Partnership
+      dockerfile: MergeDuo.Microservices/MergeDuo.Partnership/src/MergeDuo.Partnership.Api/Dockerfile
+      solution_path: MergeDuo.Microservices/MergeDuo.Partnership/MergeDuo.Partnership.sln

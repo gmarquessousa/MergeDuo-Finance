@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9A0C5307-5599-488D-A758-F9F475E876EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDuo.Identity.Domain", "src\MergeDuo.Identity.Domain\MergeDuo.Identity.Domain.csproj", "{C1128ECE-8A89-4F38-9105-5FF1EDEA9C70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDuo.Identity.Infra", "src\MergeDuo.Identity.Infra\MergeDuo.Identity.Infra.csproj", "{22D939C4-7E97-42EC-9203-184F5D99DE3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDuo.Identity.Api", "src\MergeDuo.Identity.Api\MergeDuo.Identity.Api.csproj", "{96D6F45F-5685-476D-ACD0-5B0DDA44B30A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1E0FB971-6447-447B-B702-9CA690A872DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDuo.Identity.Tests", "tests\MergeDuo.Identity.Tests\MergeDuo.Identity.Tests.csproj", "{A7E4726D-22EB-4FB9-A4B1-14681D8972E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{BF5F0B3B-2CE5-48F4-8D1B-9F78019B7D75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDuo.Identity.ReservationsBackfill", "tools\MergeDuo.Identity.ReservationsBackfill\MergeDuo.Identity.ReservationsBackfill.csproj", "{DE180316-FD9F-4F06-B2EE-9756C8058B8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1128ECE-8A89-4F38-9105-5FF1EDEA9C70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1128ECE-8A89-4F38-9105-5FF1EDEA9C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1128ECE-8A89-4F38-9105-5FF1EDEA9C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1128ECE-8A89-4F38-9105-5FF1EDEA9C70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22D939C4-7E97-42EC-9203-184F5D99DE3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22D939C4-7E97-42EC-9203-184F5D99DE3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22D939C4-7E97-42EC-9203-184F5D99DE3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22D939C4-7E97-42EC-9203-184F5D99DE3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96D6F45F-5685-476D-ACD0-5B0DDA44B30A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96D6F45F-5685-476D-ACD0-5B0DDA44B30A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96D6F45F-5685-476D-ACD0-5B0DDA44B30A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96D6F45F-5685-476D-ACD0-5B0DDA44B30A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7E4726D-22EB-4FB9-A4B1-14681D8972E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7E4726D-22EB-4FB9-A4B1-14681D8972E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7E4726D-22EB-4FB9-A4B1-14681D8972E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7E4726D-22EB-4FB9-A4B1-14681D8972E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE180316-FD9F-4F06-B2EE-9756C8058B8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE180316-FD9F-4F06-B2EE-9756C8058B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE180316-FD9F-4F06-B2EE-9756C8058B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE180316-FD9F-4F06-B2EE-9756C8058B8D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C1128ECE-8A89-4F38-9105-5FF1EDEA9C70} = {9A0C5307-5599-488D-A758-F9F475E876EF}
+		{22D939C4-7E97-42EC-9203-184F5D99DE3B} = {9A0C5307-5599-488D-A758-F9F475E876EF}
+		{96D6F45F-5685-476D-ACD0-5B0DDA44B30A} = {9A0C5307-5599-488D-A758-F9F475E876EF}
+		{A7E4726D-22EB-4FB9-A4B1-14681D8972E4} = {1E0FB971-6447-447B-B702-9CA690A872DF}
+		{DE180316-FD9F-4F06-B2EE-9756C8058B8D} = {BF5F0B3B-2CE5-48F4-8D1B-9F78019B7D75}
+	EndGlobalSection
+EndGlobal

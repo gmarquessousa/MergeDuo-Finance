@@ -1,0 +1,21 @@
+name: Deploy Profile
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-container-app.yml
+    secrets: inherit
+    with:
+      display_name: Profile
+      aca_kind: app
+      aca_name: aca-mergeduo-profile
+      image_repository: mergeduo-profile
+      docker_context: MergeDuo.Microservices/MergeDuo.Profile
+      dockerfile: MergeDuo.Microservices/MergeDuo.Profile/src/MergeDuo.Profile.Api/Dockerfile
+      solution_path: MergeDuo.Microservices/MergeDuo.Profile/MergeDuo.Profile.sln

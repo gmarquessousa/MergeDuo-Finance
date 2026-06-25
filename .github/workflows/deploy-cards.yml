@@ -1,0 +1,21 @@
+name: Deploy Cards
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-container-app.yml
+    secrets: inherit
+    with:
+      display_name: Cards
+      aca_kind: app
+      aca_name: aca-mergeduo-cards
+      image_repository: mergeduo-cards
+      docker_context: MergeDuo.Microservices/MergeDuo.Cards
+      dockerfile: MergeDuo.Microservices/MergeDuo.Cards/src/MergeDuo.Cards.Api/Dockerfile
+      solution_path: MergeDuo.Microservices/MergeDuo.Cards/MergeDuo.Cards.sln

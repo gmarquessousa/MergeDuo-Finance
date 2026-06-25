@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ADBB6CD1-ACC4-4F8C-AEC3-2B5A072E6B8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDuo.Transactions.Api", "src\MergeDuo.Transactions.Api\MergeDuo.Transactions.Api.csproj", "{0FFF620D-AA64-4008-ADF0-32A6DB436C37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDuo.Transactions.Domain", "src\MergeDuo.Transactions.Domain\MergeDuo.Transactions.Domain.csproj", "{43CFABBF-48D2-4134-8674-3E140C09B9B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDuo.Transactions.Infra", "src\MergeDuo.Transactions.Infra\MergeDuo.Transactions.Infra.csproj", "{B098F25F-E0C7-4206-B9EE-757F558B9A38}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BC2FEB8E-16BE-45C2-87D8-50EFD301BA71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDuo.Transactions.Tests", "tests\MergeDuo.Transactions.Tests\MergeDuo.Transactions.Tests.csproj", "{D517E034-E76B-4CA7-B294-E50DE180D318}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0FFF620D-AA64-4008-ADF0-32A6DB436C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FFF620D-AA64-4008-ADF0-32A6DB436C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FFF620D-AA64-4008-ADF0-32A6DB436C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FFF620D-AA64-4008-ADF0-32A6DB436C37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43CFABBF-48D2-4134-8674-3E140C09B9B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43CFABBF-48D2-4134-8674-3E140C09B9B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43CFABBF-48D2-4134-8674-3E140C09B9B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43CFABBF-48D2-4134-8674-3E140C09B9B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B098F25F-E0C7-4206-B9EE-757F558B9A38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B098F25F-E0C7-4206-B9EE-757F558B9A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B098F25F-E0C7-4206-B9EE-757F558B9A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B098F25F-E0C7-4206-B9EE-757F558B9A38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D517E034-E76B-4CA7-B294-E50DE180D318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D517E034-E76B-4CA7-B294-E50DE180D318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D517E034-E76B-4CA7-B294-E50DE180D318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D517E034-E76B-4CA7-B294-E50DE180D318}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0FFF620D-AA64-4008-ADF0-32A6DB436C37} = {ADBB6CD1-ACC4-4F8C-AEC3-2B5A072E6B8C}
+		{43CFABBF-48D2-4134-8674-3E140C09B9B0} = {ADBB6CD1-ACC4-4F8C-AEC3-2B5A072E6B8C}
+		{B098F25F-E0C7-4206-B9EE-757F558B9A38} = {ADBB6CD1-ACC4-4F8C-AEC3-2B5A072E6B8C}
+		{D517E034-E76B-4CA7-B294-E50DE180D318} = {BC2FEB8E-16BE-45C2-87D8-50EFD301BA71}
+	EndGlobalSection
+EndGlobal

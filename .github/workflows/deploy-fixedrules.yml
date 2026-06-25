@@ -1,0 +1,21 @@
+name: Deploy Fixed Rules
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-container-app.yml
+    secrets: inherit
+    with:
+      display_name: Fixed Rules
+      aca_kind: app
+      aca_name: aca-mergeduo-fixedrules
+      image_repository: mergeduo-fixedrules
+      docker_context: MergeDuo.Microservices/MergeDuo.FixedRules
+      dockerfile: MergeDuo.Microservices/MergeDuo.FixedRules/src/MergeDuo.FixedRules.Api/Dockerfile
+      solution_path: MergeDuo.Microservices/MergeDuo.FixedRules/MergeDuo.FixedRules.sln

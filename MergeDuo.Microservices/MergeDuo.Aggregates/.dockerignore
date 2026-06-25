@@ -1,0 +1,35 @@
+# Build artifacts
+**/bin/
+**/obj/
+**/out/
+**/publish/
+**/TestResults/
+
+# IDE / VCS
+**/.vs/
+**/.vscode/
+**/.idea/
+**/.git/
+**/.gitignore
+**/.gitattributes
+**/*.user
+**/*.suo
+
+# Tests are not needed for the runtime image
+tests/
+
+# Project notes / docs
+AI/
+README.md
+**/*.md
+
+# Local-only configuration (must not leak into the image; use ACA secrets/env instead)
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/secrets.json
+**/.env
+**/.env.*
+**/*.pfx
+**/*.pem
+**/*.key
+**/*.p12

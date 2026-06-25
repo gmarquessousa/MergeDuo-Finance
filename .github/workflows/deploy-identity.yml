@@ -1,0 +1,21 @@
+name: Deploy Identity
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-container-app.yml
+    secrets: inherit
+    with:
+      display_name: Identity
+      aca_kind: app
+      aca_name: aca-mergeduo-identity
+      image_repository: mergeduo-identity
+      docker_context: MergeDuo.Microservices/MergeDuo.Identity
+      dockerfile: MergeDuo.Microservices/MergeDuo.Identity/src/MergeDuo.Identity.Api/Dockerfile
+      solution_path: MergeDuo.Microservices/MergeDuo.Identity/MergeDuo.Identity.sln
