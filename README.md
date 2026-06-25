@@ -41,9 +41,6 @@ Principais capacidades:
 
 ## Demonstração
 
-> Demo ao vivo: _adicione a URL pública após o deploy (ex.:
-> `https://mergeduo.example.com`)._
-
 Veja o passo a passo completo de cada tela em
 **[docs/funcionalidades.md](docs/funcionalidades.md)** — com o intuito de cada
 página, o que dá para fazer e as limitações. Abaixo, alguns destaques:
