@@ -89,5 +89,3 @@ Esta versão é uma topologia de portfólio de baixo custo:
 - Container Apps em Consumption.
 - Cosmos DB serverless com acesso público.
 - Sem API Management, Front Door, WAF ou VNet privada.
-- Key Vault já existe na infra, mas a integração completa via secret references
-  fica como melhoria futura.
