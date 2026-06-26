@@ -1,11 +1,3 @@
-/**
- * Centralised resolution and validation of public runtime configuration.
- *
- * Vite exposes `VITE_*` variables to the browser; none of them must contain
- * secrets. Production defaults intentionally keep APIs under the app origin so
- * iOS standalone PWAs receive first-party auth cookies after Google redirect.
- */
-
 import { sanitizeBaseUrl } from './http';
 
 const FALLBACKS = {
@@ -83,11 +75,6 @@ export interface ConfigValidationResult {
   missing: string[];
 }
 
-/**
- * Returns the list of required production-only env vars that are still
- * pointing at the development fallback. Used by the bootstrap to refuse to
- * render the app when something is missing.
- */
 export function validateProductionConfig(config: AppConfig = appConfig): ConfigValidationResult {
   if (!config.isProduction) {
     return { ok: true, missing: [] };

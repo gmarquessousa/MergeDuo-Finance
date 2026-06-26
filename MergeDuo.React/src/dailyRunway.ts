@@ -12,27 +12,16 @@ export interface DailyRunwayMonthInput extends DailyRunwayMonthRef {
 
 export interface DailyRunwayState {
   ready: boolean;
-  /** Per-day safe spend: minProjectedTotal / horizonDays. */
   value: number | null;
-  /** Per-day average if you spread the final remaining total over the horizon. */
   averagePerDay: number | null;
-  /** Total projected at the last day of the horizon. */
   remainingTotal: number | null;
-  /** Lowest projected (cash + invested) total within the horizon. */
   minProjectedTotal: number | null;
-  /** ISO date (YYYY-MM-DD) of the lowest projected day. */
   minProjectedDate: string | null;
-  /** ISO date (YYYY-MM-DD) of the last covered day in the horizon. */
   horizonEndDate: string | null;
   horizonDays: number;
   horizonMonths: number;
 }
 
-/**
- * Returns the months whose aggregates are needed to compute the runway for the
- * given horizon: the previous month (for invested baseline) plus the current
- * month and every subsequent month up to `horizonMonths`.
- */
 export function buildDailyRunwayMonthRefs(
   referenceDate: Date,
   horizonMonths: number,

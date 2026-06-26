@@ -1,5 +1,4 @@
 # syntax=docker/dockerfile:1.7
-# Build context MUST be the MergeDuo.Copilot repository root.
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
 WORKDIR /src

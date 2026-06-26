@@ -442,7 +442,6 @@ public sealed class TransactionsRepository : ITransactionsRepository
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
-                // The item changed between query and ETag hydration. Keep the list response best-effort.
             }
         }
     }

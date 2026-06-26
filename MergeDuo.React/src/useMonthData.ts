@@ -82,12 +82,6 @@ function remapCreditCardTxs(txs: Transaction[], cards: Card[]): Transaction[] {
   });
 }
 
-/**
- * Local fallback derivation of monthly summaries from already-fetched
- * transactions. Used when {@link useAggregates} cannot serve a value (e.g. the
- * Aggregates microservice is unavailable). Future FixedRules are projected
- * locally with the same cash-impact semantics used by the backend.
- */
 export function useMonthData(year: number, monthIdx: number): MonthData {
   const {
     startingBalance,
@@ -117,10 +111,6 @@ export function useMonthData(year: number, monthIdx: number): MonthData {
     const firstOfMonthDate = new Date(year, monthIdx, 1);
     const firstOfMonth = firstOfMonthDate.getTime();
 
-    // Inject projected transactions from FixedRules for current/future months.
-    // Only for the current user (ownerFilter !== 'partner') since FixedRules
-    // are per-user and partner's rules are not available client-side.
-    // Deduplicate: skip rules already materialised as a real transaction this month.
     const today = new Date();
     const isFutureMonth =
       year > today.getFullYear() ||

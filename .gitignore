@@ -1,4 +1,3 @@
-# Build artifacts
 **/bin/
 **/obj/
 **/out/
@@ -10,7 +9,6 @@
 **/*.coverage
 **/*.coveragexml
 
-# Node / React
 **/logs/
 **/node_modules/
 **/dist/
@@ -22,7 +20,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Terraform local state
 **/.terraform/
 **/.terraform.tfstate.lock.info
 **/terraform.tfstate
@@ -34,7 +31,6 @@ lerna-debug.log*
 **/crash.log
 **/crash.*.log
 
-# Local environment and secrets
 .local/
 **/.env
 **/.env.*
@@ -48,7 +44,6 @@ lerna-debug.log*
 **/*.pfx
 **/*.p12
 
-# IDE / OS
 .scratch/
 **/.vs/
 **/.vscode/
@@ -62,7 +57,6 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 
-# Logs / temp
 *.log
 *.tmp
 *.temp

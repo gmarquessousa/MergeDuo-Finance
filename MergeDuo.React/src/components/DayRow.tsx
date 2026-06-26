@@ -6,7 +6,7 @@ interface Props {
   year: number;
   monthIdx: number;
   day: number;
-  dayNet: number; // saldo do dia (entradas - saidas)
+  dayNet: number;
   totalAcumulado: number;
   expanded: boolean;
   onToggle: () => void;
@@ -45,7 +45,6 @@ export function DayRow({
         expanded ? 'bg-paper-card' : 'bg-transparent hover:bg-paper-card/70'
       }`}
     >
-      {/* Dia */}
       <div className="flex flex-col items-center gap-0.5">
         <div
           className={`w-10 h-10 rounded-2xl grid place-items-center text-sm font-semibold ${
@@ -68,7 +67,6 @@ export function DayRow({
         </div>
       </div>
 
-      {/* Saldo do dia */}
       <div className="min-w-0">
         <div className="text-[10px] uppercase tracking-wider text-ink-muted font-medium">
           Saldo do dia
@@ -115,7 +113,6 @@ export function DayRow({
         )}
       </div>
 
-      {/* Total acumulado */}
       <div className="col-span-2 text-left min-[380px]:col-span-1 min-[380px]:text-right">
         <div className="text-[10px] uppercase tracking-wider text-ink-muted font-medium">
           Total

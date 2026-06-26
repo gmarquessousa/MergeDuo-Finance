@@ -223,8 +223,6 @@ auth.MapGet("/google/challenge", (
     const int challengeTtlSeconds = 600;
     var expiresAt = now.AddSeconds(challengeTtlSeconds);
     var token = HttpHelpers.CreateChallengeCookie(nonce, csrf, expiresAt, refresh.Pepper);
-    // Cookie kept for back-compat / browsers where it works (first-party).
-    // Body token is the primary transport so Safari ITP / cross-site cookie blocks don't break login.
     response.Cookies.Append(HttpHelpers.ChallengeCookieName, token, new CookieOptions
     {
         HttpOnly = true,
@@ -649,7 +647,6 @@ app.MapPost("/users/me/avatar", async (
     }
     catch
     {
-        // Avatar replacement is committed in Cosmos; old blob cleanup can be retried operationally.
     }
 
     metrics.AvatarUploaded();

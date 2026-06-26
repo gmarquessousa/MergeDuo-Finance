@@ -99,7 +99,6 @@ export class AggregatesApiError extends ApiError {
   }
 }
 
-/** Fetches the current user's monthly aggregate (`/aggregates/me/{year}/{month}`). */
 export async function getMyMonthAggregate(
   accessToken: string,
   year: number,
@@ -114,7 +113,6 @@ export async function getMyMonthAggregate(
   });
 }
 
-/** Fetches the current user's annual aggregate (`/aggregates/me/year/{year}`). */
 export async function getMyYearAggregate(
   accessToken: string,
   year: number,
@@ -128,7 +126,6 @@ export async function getMyYearAggregate(
   });
 }
 
-/** Fetches a partner's monthly aggregate (`/aggregates/{userId}/{year}/{month}`). */
 export async function getPartnerMonthAggregate(
   accessToken: string,
   userId: string,
@@ -144,7 +141,6 @@ export async function getPartnerMonthAggregate(
   });
 }
 
-/** Fetches a partner's annual aggregate (`/aggregates/{userId}/year/{year}`). */
 export async function getPartnerYearAggregate(
   accessToken: string,
   userId: string,
@@ -202,7 +198,6 @@ function request<T>(options: AggregatesRequestOptions): Promise<T> {
   });
 }
 
-/** Sums two monthly aggregates (used for the `both` owner filter). */
 export function combineMonthAggregates(
   a: MonthlyAggregateResponse,
   b: MonthlyAggregateResponse,
@@ -260,7 +255,6 @@ export interface CombinedYearSummary {
   includesProjected: boolean;
 }
 
-/** Sums year aggregates for two users month-by-month. */
 export function combineYearAggregates(
   a: YearAggregatesResponse,
   b: YearAggregatesResponse | null,

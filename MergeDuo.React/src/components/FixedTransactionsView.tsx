@@ -105,7 +105,6 @@ export function FixedTransactionsView({
   const [actionError, setActionError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'paused'>('all');
 
-  // ---- edit state ----
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editDescription, setEditDescription] = useState('');
   const [editAmountStr, setEditAmountStr] = useState('');
@@ -1338,7 +1337,6 @@ function normalizeEndsAt(value: string, startsAt: string): { value: string | nul
   const normalized = value.trim();
   if (!normalized) return { value: null, error: null };
 
-  // Aceita tanto YYYY-MM (input month) quanto YYYY-MM-DD (compatibilidade).
   const monthMatch = /^(\d{4})-(\d{2})$/.exec(normalized);
   let endDate: Date | null = null;
   let endIso: string | null = null;
@@ -1348,7 +1346,6 @@ function normalizeEndsAt(value: string, startsAt: string): { value: string | nul
     if (!Number.isInteger(year) || year < 1 || month < 1 || month > 12) {
       return { value: null, error: 'Informe um mês final válido.' };
     }
-    // Usa o último dia do mês selecionado.
     const lastDay = new Date(year, month, 0).getDate();
     endDate = new Date(year, month - 1, lastDay);
     endIso = `${monthMatch[1]}-${monthMatch[2]}-${String(lastDay).padStart(2, '0')}`;

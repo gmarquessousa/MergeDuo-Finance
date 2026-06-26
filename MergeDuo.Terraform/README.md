@@ -30,7 +30,6 @@ Controles de custo aplicados atualmente:
 ```powershell
 cd T:\MergeDuo\MergeDuo.Terraform
 Copy-Item terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars
 
 terraform init
 terraform fmt

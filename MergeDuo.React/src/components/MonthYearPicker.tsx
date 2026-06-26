@@ -11,20 +11,13 @@ const MONTH_LABELS_FULL = [
 ];
 
 export type MonthYearPickerProps = {
-  /** Valor no formato `YYYY-MM`. String vazia = nenhum selecionado. */
   value: string;
   onChange: (value: string) => void;
-  /** Limite mínimo (`YYYY-MM`), opcional. */
   min?: string;
-  /** Limite máximo (`YYYY-MM`), opcional. */
   max?: string;
-  /** Texto exibido quando nenhum mês está selecionado. */
   placeholder?: string;
-  /** Permite limpar o valor. */
   clearable?: boolean;
-  /** Tamanho do controle. */
   size?: 'md' | 'sm';
-  /** Aparece como inválido (borda destacada). */
   invalid?: boolean;
   disabled?: boolean;
   ariaLabel?: string;
@@ -44,7 +37,6 @@ function format(year: number, month: number): string {
 }
 
 function compare(a: string, b: string): number {
-  // Compara `YYYY-MM` lexicograficamente.
   if (a === b) return 0;
   return a < b ? -1 : 1;
 }
@@ -77,12 +69,10 @@ export function MonthYearPicker({
     return { year: now.getFullYear(), month: now.getMonth() + 1 };
   }, []);
 
-  // Ano atualmente exibido na grade do popover.
   const [viewYear, setViewYear] = useState<number>(
     parsedValue?.year ?? today.year,
   );
 
-  // Sincroniza o ano da grade quando o valor externo muda enquanto fechado.
   useEffect(() => {
     if (open) return undefined;
     const timeout = window.setTimeout(() => {
@@ -91,7 +81,6 @@ export function MonthYearPicker({
     return () => window.clearTimeout(timeout);
   }, [open, parsedValue?.year, today.year]);
 
-  // Fechar ao clicar fora ou pressionar Escape.
   useEffect(() => {
     if (!open) return;
 
@@ -192,7 +181,6 @@ export function MonthYearPicker({
           role="dialog"
           className="absolute right-0 z-30 mt-2 w-[16rem] rounded-2xl border border-paper-line bg-paper-card shadow-lg shadow-black/5 p-3 animate-[fadeIn_120ms_ease-out]"
         >
-          {/* Cabeçalho com ano */}
           <div className="flex items-center justify-between mb-2">
             <button
               type="button"
@@ -213,7 +201,6 @@ export function MonthYearPicker({
             </button>
           </div>
 
-          {/* Grade de meses */}
           <div className="grid grid-cols-3 gap-1.5">
             {MONTH_LABELS.map((label, index) => {
               const month = index + 1;
@@ -243,7 +230,6 @@ export function MonthYearPicker({
             })}
           </div>
 
-          {/* Rodapé com ações */}
           <div className="mt-3 pt-2 border-t border-paper-line flex items-center justify-between">
             <button
               type="button"

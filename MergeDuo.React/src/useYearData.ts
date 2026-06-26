@@ -64,11 +64,6 @@ function startingBalanceFor(
   return myStarting + partnerStarting;
 }
 
-/**
- * Local fallback derivation of annual summaries from already-fetched
- * transactions. Same caveats as {@link useMonthData}: future FixedRules are
- * projected locally when Aggregates cannot serve a value.
- */
 export function useYearData(year: number): YearData {
   const {
     startingBalance,

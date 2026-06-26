@@ -25,7 +25,6 @@ export function DayDetails({ transactions, onNew, onRemove, onEdit, onOpen, remo
 
   function resolveCardLabel(t: Transaction): string | undefined {
     if (!t.cardId) return undefined;
-    // Prefer the title baked into the transaction (set by backend for partner cards)
     if (t.cardTitle) return t.cardTitle;
     return cards.find((c) => c.id === t.cardId)?.title;
   }
@@ -52,7 +51,6 @@ export function DayDetails({ transactions, onNew, onRemove, onEdit, onOpen, remo
         </div>
       ) : showGroups ? (
         <>
-          {/* My transactions */}
           <div className="pt-1">
             <div className="px-2 pt-0.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-ink-muted">
               Meus
@@ -61,7 +59,6 @@ export function DayDetails({ transactions, onNew, onRemove, onEdit, onOpen, remo
               {myTxs.map(renderItem)}
             </div>
           </div>
-          {/* Partner transactions */}
           <div className="mt-2 pt-2 border-t-2 border-accent-invest/15">
             <div className="px-2 pb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-accent-invest">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

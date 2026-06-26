@@ -66,8 +66,6 @@ export function DailyList({
   } = useFinance();
   const offlineTransactions = useOfflineTransactions();
   const { perDay, totalAcumulado } = useMonthData(year, monthIdx);
-  // Aggregate is already cached from App-level fetches — no extra API call.
-  // When available, it provides a per-day absolute balance series.
   const aggregateSummary = useAggregateMonthSummary(year, monthIdx + 1);
   const yearMonth = `${year}-${String(monthIdx + 1).padStart(2, '0')}`;
   const monthLoad = transactionLoads[transactionCacheKey({ yearMonth, owner: ownerFilter })];
@@ -154,8 +152,6 @@ export function DailyList({
       throw new Error('Selecione um cartão para continuar.');
     }
 
-    // Quando o usuário escolhe uma fatura específica, sintetizamos um
-    // purchaseDate que cai dentro da janela daquela fatura.
     let purchaseDate = data.date;
     if (isCreditCard && data.cardId && data.invoiceYearMonth) {
       const card = cards.find((c) => c.id === data.cardId);

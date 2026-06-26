@@ -529,8 +529,8 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         financeCacheKey(pending.userId),
         JSON.stringify(createPersistedFinanceState(pending.state)),
       );
-    } catch {
-      // Ignore quota / privacy-mode failures and keep the in-memory state.
+    } catch (error) {
+      void error;
     }
   }, []);
 

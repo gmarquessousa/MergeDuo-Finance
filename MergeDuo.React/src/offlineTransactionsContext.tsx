@@ -377,8 +377,8 @@ function writeQueuedCreates(entries: QueuedCreateTransaction[]) {
 
   try {
     localStorage.setItem(QUEUED_CREATE_STORAGE_KEY, JSON.stringify(entries));
-  } catch {
-    // Ignore storage failures and keep the in-memory optimistic state.
+  } catch (error) {
+    void error;
   }
 }
 

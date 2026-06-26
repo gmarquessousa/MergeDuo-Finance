@@ -248,7 +248,6 @@ public sealed class CardsRepository : ICardsRepository
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
-                // The item changed between query and ETag hydration. Keep the list response best-effort.
             }
         }
     }

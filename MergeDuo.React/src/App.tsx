@@ -642,8 +642,6 @@ function Shell() {
   const aggregateMonthSummary = useAggregateMonthSummary(year, monthIdx + 1);
   const aggregateYearSummary = useAggregateYearSummary(year);
 
-  // Aggregates for the runway window: previous month + months 0..12 from the selected month/day.
-  // The hook list is fixed-length so calling it inline is safe.
   const runwayMonthRefM1 = dailyRunwayMonthRefs[0];
   const runwayMonthRef0 = dailyRunwayMonthRefs[1];
   const runwayMonthRef1 = dailyRunwayMonthRefs[2];
@@ -674,9 +672,6 @@ function Shell() {
   const runwaySummary11 = useAggregateMonthSummary(runwayMonthRef11.year, runwayMonthRef11.monthIdx + 1);
   const runwaySummary12 = useAggregateMonthSummary(runwayMonthRef12.year, runwayMonthRef12.monthIdx + 1);
 
-  // Loads aggregates for the active period+owner filter into the store.
-  // The visible summary is loaded first; runway years are deferred so they do
-  // not compete with the top-card request during month navigation.
   const loadAggregatesForActivePeriod = useCallback((
     signal?: AbortSignal,
     force = false,
@@ -847,7 +842,6 @@ function Shell() {
     year,
   ]);
 
-  // Fetch aggregates for the active period and owner filter.
   useEffect(() => {
     if (!session || !currentUser) return;
     const controller = new AbortController();
@@ -931,8 +925,6 @@ function Shell() {
   );
 
 
-  // Current month: the summary header mixes month-end totals (patrimônio,
-  // investido and monthly flows) with today's saldo em conta snapshot.
 
   const isCurrentPeriod = period === 'monthly'
     ? now.getFullYear() === year && now.getMonth() === monthIdx
@@ -1092,13 +1084,11 @@ function Shell() {
     <OfflineTransactionsProvider accessToken={session.accessToken} onRemoteCommit={refreshFinancialAfterMutation}>
     <div className="min-h-screen w-full flex justify-center" style={{ background: 'rgb(var(--bg-app))' }}>
       <div className="w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-5xl min-h-screen bg-paper flex flex-col relative">
-        {/* Top bar */}
         <header className="glass-header sticky top-0 z-30 px-4 sm:px-5 md:px-8 lg:px-10 pt-4 sm:pt-5 pb-3 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           <div className="justify-self-start inline-flex items-center gap-2 text-sm font-semibold tracking-tight text-ink">
             <BrandMark />
             <span className="hidden min-[340px]:inline">Merge Duo</span>
           </div>
-          {/* Period pill (centered) */}
           <div className="justify-self-center inline-flex p-0.5 rounded-full bg-paper-card border border-paper-line shadow-soft-sm">
             <PeriodBtn label="Mensal" active={period === 'monthly'} onClick={() => setPeriod('monthly')} />
             <PeriodBtn label="Anual"  active={period === 'annual'}  onClick={() => setPeriod('annual')}  />
@@ -1281,7 +1271,6 @@ function Shell() {
         )}
         </React.Suspense>
 
-        {/* Bottom tab bar */}
         <nav
           className="glass-nav fixed bottom-0 left-1/2 -translate-x-1/2 z-40 flex w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-5xl"
           style={{ height: 'calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px))' }}
@@ -1415,7 +1404,6 @@ function MenuItem({
   );
 }
 
-/* Menu icons */
 const MS = { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true as const };
 function IconRepeat() { return <svg {...MS}><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>; }
 function IconTag()    { return <svg {...MS}><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1"/></svg>; }

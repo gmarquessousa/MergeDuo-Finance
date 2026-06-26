@@ -77,7 +77,6 @@ As APIs usam Cosmos DB. Defina a connection string por variável de ambiente
 local:
 
 ```powershell
-# Exemplo com o Azure Cosmos DB Emulator
 $env:Cosmos__ConnectionString="AccountEndpoint=https://localhost:8081/;AccountKey=<chave-do-emulador>"
 ```
 

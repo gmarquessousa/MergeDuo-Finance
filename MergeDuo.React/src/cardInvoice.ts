@@ -1,16 +1,6 @@
 import type { Card, Transaction } from './types';
 import { daysInMonth, isoDate } from './utils';
 
-/**
- * For a credit_card+cardId transaction WITHOUT installments, the stored `date`
- * is treated as the purchase date. The invoice that closes on/after the
- * purchase date determines the cash-impact (due) date.
- *
- * Convention:
- *   - purchase date <= closing date: invoice closes in the purchase month
- *   - purchase date > closing date: invoice closes in the next month
- *   - dueDay > closingDay uses the invoice month; otherwise the next month
- */
 export function computeInvoiceDueDate(
   purchaseISO: string,
   card: Pick<Card, 'closingDay' | 'dueDay'>,
@@ -34,15 +24,8 @@ export function computeInvoiceDueDate(
   return isoDate(dueDate.getFullYear(), dueDate.getMonth(), day);
 }
 
-/**
- * Resolves the cash-impact date for any transaction. Stored date is used
- * unless this is a legacy credit_card+cardId tx without an installment marker
- * and without an explicit purchaseDate (in that case we treat date as
- * purchase date and remap to the invoice due date).
- */
 export function effectiveCashDate(tx: Transaction, cards: Card[]): string {
   if (tx.category !== 'credit_card' || !tx.cardId) return tx.date;
-  // installments and freshly-added txs already store the due date in `date`
   if (tx.installments) return tx.date;
   if (tx.purchaseDate) return tx.date;
   const card = cards.find((c) => c.id === tx.cardId);
@@ -50,10 +33,6 @@ export function effectiveCashDate(tx: Transaction, cards: Card[]): string {
   return computeInvoiceDueDate(tx.date, card);
 }
 
-/**
- * Returns the invoice "month" (year+monthIdx) a credit_card transaction belongs to,
- * based on its cash-impact date.
- */
 export function invoiceMonthOf(tx: Transaction, cards: Card[]): { year: number; monthIdx: number } | null {
   if (tx.category !== 'credit_card' || !tx.cardId) return null;
   const iso = effectiveCashDate(tx, cards);
@@ -62,10 +41,6 @@ export function invoiceMonthOf(tx: Transaction, cards: Card[]): { year: number; 
   return { year: d.getFullYear(), monthIdx: d.getMonth() };
 }
 
-/**
- * Returns the due-date year-month (YYYY-MM) that a purchase date maps to,
- * given the card's closingDay and dueDay. Mirrors the backend logic.
- */
 export function invoiceMonthForPurchase(
   purchaseISO: string,
   card: Pick<Card, 'closingDay' | 'dueDay'>,
@@ -74,43 +49,25 @@ export function invoiceMonthForPurchase(
   return due.slice(0, 7);
 }
 
-/**
- * Given a target invoice due-year-month (YYYY-MM), returns a synthetic
- * purchaseDate (ISO YYYY-MM-DD) that — when passed to `computeInvoiceDueDate`
- * — produces a due date inside that same year-month.
- *
- * Strategy: work backwards from dueYM to find the invoice's closing month,
- * then place the purchase on the closingDay of that month (the latest day still
- * inside that window). Mirrors CardInvoiceRules.DueDateForPurchase in the backend.
- */
 export function synthesizePurchaseDateForInvoice(
   targetDueYM: string,
   card: Pick<Card, 'closingDay' | 'dueDay'>,
 ): string {
   const [yearStr, monthStr] = targetDueYM.split('-');
   const dueYear = Number(yearStr);
-  const dueMonthIdx = Number(monthStr) - 1; // 0-based
+  const dueMonthIdx = Number(monthStr) - 1;
 
-  // The due month is either: invoiceMonth (when dueDay > closingDay)
-  // or invoiceMonth + 1 (when dueDay <= closingDay).
-  // Invert: if dueDay > closingDay → closeMonthIdx = dueMonthIdx
-  //         else                   → closeMonthIdx = dueMonthIdx - 1
   const closeMonthIdx =
     card.dueDay > card.closingDay ? dueMonthIdx : dueMonthIdx - 1;
 
-  // Normalise negative month
   const closeDate = new Date(dueYear, closeMonthIdx, 1);
   const closeYear = closeDate.getFullYear();
-  const closeMonth = closeDate.getMonth(); // 0-based
+  const closeMonth = closeDate.getMonth();
 
-  // Place purchase on closingDay (clamped to month length)
   const day = Math.min(card.closingDay, daysInMonth(closeYear, closeMonth));
   return isoDate(closeYear, closeMonth, day);
 }
 
-/**
- * Formats a YYYY-MM string as 'Mai/2026' style (short month + year).
- */
 export function formatInvoiceYM(ym: string): string {
   const [y, m] = ym.split('-');
   if (!y || !m) return ym;
@@ -120,17 +77,13 @@ export function formatInvoiceYM(ym: string): string {
     .replace(/^./, (c) => c.toUpperCase());
 }
 
-/**
- * Generates N installment transactions (without ids — store assigns them)
- * for a credit-card purchase. All installments share a `groupId`.
- */
 export function buildInstallmentTransactions(input: {
   purchaseISO: string;
   card: Card;
   category: 'credit_card';
   description: string;
-  totalAmount: number; // total purchase price
-  installments: number; // 1..N
+  totalAmount: number;
+  installments: number;
   owner?: string;
   groupId: string;
 }): Omit<Transaction, 'id'>[] {
@@ -142,7 +95,6 @@ export function buildInstallmentTransactions(input: {
       input.installments > 1
         ? `${input.description} (${i}/${input.installments})`
         : input.description;
-    // Adjust last installment to absorb rounding
     const amount =
       i === input.installments
         ? +(input.totalAmount - per * (input.installments - 1)).toFixed(2)

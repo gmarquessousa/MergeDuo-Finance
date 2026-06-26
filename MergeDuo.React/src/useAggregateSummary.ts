@@ -55,12 +55,6 @@ export interface AggregateSummary {
   locallyInvalidated: boolean;
 }
 
-/**
- * Resolves the monthly summary that drives {@link SummaryHeader}, sourcing
- * data from the Aggregates microservice. Combines current user + partner
- * aggregates when the owner filter is `both`. Returns `status: 'idle'` when
- * neither aggregate is present so callers can render skeletons.
- */
 export function useAggregateMonthSummary(year: number, month: number): AggregateSummary {
   const { currentUser, partner, mergeActive, ownerFilter } = useFinance();
   const { monthByKey } = useAggregates();

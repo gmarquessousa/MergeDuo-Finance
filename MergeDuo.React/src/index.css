@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Color tokens (iOS-inspired system palette) ── */
 :root {
   --ink:           17 17 20;
   --ink-soft:      58 58 64;
@@ -62,19 +61,16 @@ body {
   transition: background 0.25s, color 0.25s;
 }
 
-/* Headings: tighter tracking for a more refined display feel */
 h1, h2, h3 {
   letter-spacing: -0.026em;
 }
 
-/* Currency / numeric values: aligned tabular figures like iOS */
 .tabular,
 .tnum {
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1, 'cv01' 1;
 }
 
-/* ── Subtle scrollbars ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -89,14 +85,12 @@ h1, h2, h3 {
   scrollbar-color: rgb(var(--paper-line)) transparent;
 }
 
-/* ── Focus ring (accessible, subtle) ── */
 :where(button, a, input, select, textarea, [role='button']):focus-visible {
   outline: 2.5px solid rgb(var(--ring) / 0.6);
   outline-offset: 2px;
   border-radius: 12px;
 }
 
-/* ── Bold surface: prominent in both modes ── */
 .bold-surface {
   background-color: rgb(22 22 26);
   color: rgb(255 255 255);
@@ -106,7 +100,6 @@ h1, h2, h3 {
   color: rgb(228 228 222);
 }
 
-/* ── Hero gradient surface (patrimônio card) ── */
 .hero-surface {
   background:
     radial-gradient(120% 140% at 0% 0%, rgb(38 40 58) 0%, rgb(20 21 32) 48%, rgb(9 9 14) 100%);
@@ -142,7 +135,6 @@ h1, h2, h3 {
   color: rgb(245 245 247);
 }
 
-/* ── Sticky glass header ── */
 .glass-header {
   background: rgb(var(--bg-app) / 0.72);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -157,7 +149,6 @@ h1, h2, h3 {
   }
 }
 
-/* ── Glass bottom nav ── */
 .glass-nav {
   background: rgb(var(--paper-card) / 0.78);
   -webkit-backdrop-filter: saturate(180%) blur(24px);
@@ -167,7 +158,6 @@ h1, h2, h3 {
               0 -10px 30px -12px rgb(var(--shadow-color) / 0.10);
 }
 
-/* ── Shadow scale ── */
 .shadow-soft-sm {
   box-shadow: 0 1px 2px rgb(var(--shadow-color) / 0.05), 0 1px 1px rgb(var(--shadow-color) / 0.03);
 }
@@ -189,7 +179,6 @@ h1, h2, h3 {
     0 10px 24px -6px rgb(var(--shadow-color) / 0.34);
 }
 
-/* ── Keyframes ── */
 @keyframes slide-up {
   from { transform: translateY(12px); opacity: 0; }
   to   { transform: translateY(0);   opacity: 1; }
@@ -212,12 +201,10 @@ h1, h2, h3 {
   100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-/* ── Animation utilities ── */
 .animate-slide-up  { animation: slide-up  360ms var(--ease-ios) both; }
 .animate-fade-in   { animation: fade-in   220ms ease both; }
 .animate-scale-in  { animation: scale-in  280ms var(--spring) both; }
 
-/* ── Bottom sheet utilities ── */
 @keyframes sheet-up {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
@@ -240,7 +227,6 @@ h1, h2, h3 {
   animation: shimmer 1.6s ease-in-out infinite;
 }
 
-/* ── Smooth expand animation ── */
 .expand-enter { max-height: 0; opacity: 0; }
 .expand-enter-active {
   max-height: 1200px;
@@ -248,7 +234,6 @@ h1, h2, h3 {
   transition: max-height 300ms ease, opacity 200ms ease;
 }
 
-/* ── Interactive surface ── */
 .tap-surface {
   transition: background-color 160ms var(--ease-ios), transform 200ms var(--spring),
     border-color 160ms ease, opacity 160ms ease, box-shadow 200ms var(--ease-ios);
@@ -257,7 +242,6 @@ h1, h2, h3 {
   transform: scale(0.96);
 }
 
-/* ── Skeleton loading placeholder ── */
 .skeleton {
   border-radius: 6px;
   display: inline-block;
@@ -270,7 +254,6 @@ h1, h2, h3 {
   border-radius: inherit;
 }
 
-/* ── Bottom padding helper to clear the bottom nav ── */
 .pb-bottom-nav {
   padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px) + 16px);
 }

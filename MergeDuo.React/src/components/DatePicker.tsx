@@ -8,14 +8,10 @@ const MONTH_LABELS_FULL = [
 ];
 
 export type DatePickerProps = {
-  /** Valor no formato `YYYY-MM-DD`. String vazia = nenhum selecionado. */
   value: string;
   onChange: (value: string) => void;
-  /** Texto exibido quando nenhuma data está selecionada. */
   placeholder?: string;
-  /** Tamanho do controle. */
   size?: 'md' | 'sm';
-  /** Aparece como inválido (borda destacada). */
   invalid?: boolean;
   disabled?: boolean;
   ariaLabel?: string;
@@ -51,7 +47,6 @@ function daysInMonth(year: number, month: number): number {
   return new Date(year, month, 0).getDate();
 }
 
-/** Returns the weekday index (0=Sun) of the first day of a given month. */
 function firstWeekday(year: number, month: number): number {
   return new Date(year, month - 1, 1).getDay();
 }
@@ -78,7 +73,6 @@ export function DatePicker({
   const [viewYear, setViewYear] = useState<number>(parsedValue?.year ?? today.year);
   const [viewMonth, setViewMonth] = useState<number>(parsedValue?.month ?? today.month);
 
-  // Sync view when value changes while closed
   useEffect(() => {
     if (open) return undefined;
     const timeout = window.setTimeout(() => {
@@ -88,7 +82,6 @@ export function DatePicker({
     return () => window.clearTimeout(timeout);
   }, [open, parsedValue?.month, parsedValue?.year, today.month, today.year]);
 
-  // Close on outside click or Escape
   useEffect(() => {
     if (!open) return;
 
@@ -142,7 +135,6 @@ export function DatePicker({
     setOpen(false);
   }
 
-  // Build calendar grid
   const totalDays = daysInMonth(viewYear, viewMonth);
   const startOffset = firstWeekday(viewYear, viewMonth);
   const prevMonthDays = daysInMonth(
@@ -150,17 +142,14 @@ export function DatePicker({
     viewMonth === 1 ? 12 : viewMonth - 1,
   );
 
-  // Leading days from previous month
   const leadingDays = Array.from({ length: startOffset }, (_, i) => ({
     day: prevMonthDays - startOffset + 1 + i,
     offset: -1,
   }));
-  // Current month days
   const currentDays = Array.from({ length: totalDays }, (_, i) => ({
     day: i + 1,
     offset: 0,
   }));
-  // Trailing days from next month to fill grid (multiple of 7)
   const trailingCount = (7 - ((leadingDays.length + currentDays.length) % 7)) % 7;
   const trailingDays = Array.from({ length: trailingCount }, (_, i) => ({
     day: i + 1,
@@ -171,7 +160,6 @@ export function DatePicker({
 
   return (
     <div ref={containerRef} className="relative">
-      {/* Trigger button */}
       <button
         type="button"
         disabled={disabled}
@@ -195,7 +183,6 @@ export function DatePicker({
         <ChevronIcon className={`w-4 h-4 shrink-0 text-ink-muted transition ${open ? 'rotate-180' : ''}`} />
       </button>
 
-      {/* Popover */}
       {open && (
         <div
           ref={popoverRef}
@@ -203,7 +190,6 @@ export function DatePicker({
           aria-label="Selecionar data"
           className="absolute right-0 z-30 mt-2 w-[17rem] rounded-2xl border border-paper-line bg-paper-card shadow-lg shadow-black/5 p-3 animate-[fadeIn_120ms_ease-out]"
         >
-          {/* Month / year navigation */}
           <div className="flex items-center justify-between mb-3">
             <button
               type="button"
@@ -226,7 +212,6 @@ export function DatePicker({
             </button>
           </div>
 
-          {/* Weekday headers */}
           <div className="grid grid-cols-7 mb-1">
             {WEEKDAY_LABELS.map((wd) => (
               <div key={wd} className="h-7 flex items-center justify-center text-[10px] font-medium text-ink-muted/60 select-none">
@@ -235,7 +220,6 @@ export function DatePicker({
             ))}
           </div>
 
-          {/* Day grid */}
           <div className="grid grid-cols-7 gap-y-0.5">
             {cells.map(({ day, offset }, idx) => {
               const cellYear = offset === -1
@@ -281,7 +265,6 @@ export function DatePicker({
             })}
           </div>
 
-          {/* Footer */}
           <div className="mt-2 pt-2 border-t border-paper-line flex items-center justify-between">
             <button
               type="button"

@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -28,17 +27,14 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Cache only static assets — não cachear HTML para sempre pegar JS novo no Safari
         globPatterns: ['**/*.{js,css,svg,png,ico,woff,woff2,html}'],
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
-        // Nunca interceptar requisições de auth (Google + nosso backend)
         navigateFallbackDenylist: [/^\/auth/, /^\/users/, /^\/\.well-known/, /^\/api/],
         runtimeCaching: [
           {
-            // Auth/API: sempre network, sem cache
             urlPattern: ({ url }) =>
               url.pathname.startsWith('/auth') ||
               url.pathname.startsWith('/users') ||

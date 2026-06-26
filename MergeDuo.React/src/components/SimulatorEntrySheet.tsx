@@ -7,17 +7,17 @@ export type SimEntryFrequency = 'once' | 'installments' | 'recurring';
 export interface SimulatorEntryDraft {
   kind: SimEntryKind;
   description: string;
-  amount: number; // for 'installments' this is the value PER installment
-  startDate: string; // ISO yyyy-mm-dd
+  amount: number;
+  startDate: string;
   frequency: SimEntryFrequency;
-  installmentsUntil?: string; // ISO yyyy-mm-dd of the last installment month
-  recurringUntil?: string; // ISO yyyy-mm-dd (last occurrence date)
+  installmentsUntil?: string;
+  recurringUntil?: string;
 }
 
 interface Props {
   open: boolean;
   defaultDate: string;
-  yearEnd: string; // ISO last day of current year
+  yearEnd: string;
   onClose: () => void;
   onSubmit: (entry: SimulatorEntryDraft) => void;
 }

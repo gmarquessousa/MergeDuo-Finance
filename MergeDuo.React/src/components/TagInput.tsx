@@ -20,8 +20,6 @@ export function TagInput({ tags, onChange, label = 'Tags', suggestions = [] }: P
 
     if (!query) return available.slice(0, 8);
 
-    // Rank: prefix matches first, then substring matches; preserve incoming
-    // order (which already reflects usage frequency) within each bucket.
     const prefix: string[] = [];
     const contains: string[] = [];
     for (const tag of available) {

@@ -316,8 +316,6 @@ public sealed class ApiFlowTests
         using var client = factory.CreateHttpsClient();
         var login = await LoginAsync(client);
 
-        // Fake Google validator returns "https://lh3.googleusercontent.com/a/test"
-        // User has no uploaded avatar (AvatarUrl = null after registration)
         var request = new HttpRequestMessage(HttpMethod.Get, "/users/me");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", login.AccessToken);
         var response = await client.SendAsync(request);

@@ -57,7 +57,6 @@ export function DeleteCardSheet({ card, accessToken, onClose, onDeleted }: Props
     setError(null);
 
     try {
-      // 1. Delete fixed rules linked to this card
       for (const rule of linkedRules) {
         try {
           const latestRule = await fixedRuleForMutation(rule);
@@ -70,7 +69,6 @@ export function DeleteCardSheet({ card, accessToken, onClose, onDeleted }: Props
         removeFixedRule(rule.id);
       }
 
-      // 2. Delete locally-loaded transactions linked to this card
       for (const tx of linkedTransactions) {
         const ym = tx.yearMonth ?? tx.date.slice(0, 7);
         try {
@@ -84,7 +82,6 @@ export function DeleteCardSheet({ card, accessToken, onClose, onDeleted }: Props
         removeTransactionLocal({ id: tx.id, userId: tx.userId, yearMonth: ym });
       }
 
-      // 3. Delete the card itself
       try {
         const latestCard = await cardForMutation(card);
         await deleteCard(accessToken, latestCard.id, latestCard.etag);
@@ -146,14 +143,12 @@ export function DeleteCardSheet({ card, accessToken, onClose, onDeleted }: Props
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" role="dialog" aria-modal="true" aria-label="Excluir cartão">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={!deleting ? onClose : undefined}
       />
 
       <div ref={panelRef} className="relative z-10 w-full max-w-md mx-auto rounded-t-3xl sm:rounded-3xl bg-paper border border-paper-line shadow-2xl max-h-[85vh] flex flex-col">
-        {/* Header */}
         <div className="flex items-start gap-3 px-5 pt-5 pb-4 border-b border-paper-line shrink-0">
           <div className="w-10 h-10 rounded-full bg-accent-neg/10 grid place-items-center shrink-0 text-accent-neg">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -183,7 +178,6 @@ export function DeleteCardSheet({ card, accessToken, onClose, onDeleted }: Props
           )}
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
           {totalItems === 0 ? (
             <div className="rounded-xl bg-paper-card border border-paper-line px-4 py-3 text-[12px] text-ink-muted">
@@ -274,7 +268,6 @@ export function DeleteCardSheet({ card, accessToken, onClose, onDeleted }: Props
           )}
         </div>
 
-        {/* Footer */}
         <div className="flex gap-2 px-5 py-4 border-t border-paper-line shrink-0">
           <button
             onClick={onClose}

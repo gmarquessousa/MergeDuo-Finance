@@ -22,10 +22,8 @@ pretendido para uma fase futura.
 Comandos de geração recomendados:
 
 ```powershell
-# JWT signing key
 openssl genrsa -out jwt-private-key.pem 2048
 
-# Random application secrets
 openssl rand -base64 48
 ```
 

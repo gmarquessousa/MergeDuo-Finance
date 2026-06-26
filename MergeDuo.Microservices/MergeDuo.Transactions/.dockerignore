@@ -1,11 +1,9 @@
-# Build artifacts
 **/bin/
 **/obj/
 **/out/
 **/publish/
 **/TestResults/
 
-# IDE / VCS
 **/.vs/
 **/.vscode/
 **/.idea/
@@ -15,15 +13,12 @@
 **/*.user
 **/*.suo
 
-# Tests are not needed for the runtime image
 tests/
 
-# Project notes / docs
 AI/
 README.md
 **/*.md
 
-# Configuration and secrets must come from pipeline/ACA env or secrets
 **/appsettings.Development.json
 **/appsettings.Local.json
 **/secrets.json

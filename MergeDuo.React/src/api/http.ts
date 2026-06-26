@@ -1,18 +1,3 @@
-/**
- * Shared HTTP client used by every microservice client.
- *
- * Centralizes:
- *  - Base URL composition and trailing-slash sanitisation
- *  - JSON / FormData body handling
- *  - `credentials: 'include'` for cookie-based CSRF
- *  - `Accept: application/json`
- *  - `Idempotency-Key` for non-idempotent writes
- *  - `If-Match` ETag preconditions
- *  - Request timeout via `AbortController`
- *  - Typed `ProblemDetails` parsing
- *  - Centralised `401` notification (session expired)
- */
-
 export interface ProblemDetails {
   type?: string;
   title?: string;
@@ -60,11 +45,6 @@ export type UnauthorizedHandler = (error: ApiError) => void;
 
 let unauthorizedHandler: UnauthorizedHandler | null = null;
 
-/**
- * Lightweight in-memory ring buffer of recent API events. Used by the
- * AuthView diagnostic panel so users on devices without remote DevTools
- * (e.g. iOS PWA without a Mac) can inspect what happened around a 401.
- */
 export interface AuthDiagnosticEvent {
   ts: number;
   message: string;
@@ -78,7 +58,11 @@ export function recordAuthDiagnostic(message: string): void {
   diagBuffer.push({ ts: Date.now(), message });
   if (diagBuffer.length > DIAG_LIMIT) diagBuffer.splice(0, diagBuffer.length - DIAG_LIMIT);
   for (const listener of diagListeners) {
-    try { listener(); } catch { /* ignore */ }
+    try {
+      listener();
+    } catch {
+      continue;
+    }
   }
 }
 
@@ -94,13 +78,15 @@ export function subscribeAuthDiagnostics(listener: () => void): () => void {
 export function clearAuthDiagnostics(): void {
   diagBuffer.length = 0;
   for (const listener of diagListeners) {
-    try { listener(); } catch { /* ignore */ }
+    try {
+      listener();
+    } catch {
+      continue;
+    }
   }
 }
 
 function shortPath(baseUrl: string, path: string): string {
-  // Try to extract host short tag + path so we can tell which microservice
-  // produced the event without leaking full base URLs.
   try {
     const u = new URL(path, baseUrl.endsWith('/') ? baseUrl : baseUrl + '/');
     const host = u.host.split('.')[0] || u.host;
@@ -110,14 +96,6 @@ function shortPath(baseUrl: string, path: string): string {
   }
 }
 
-/**
- * Register a global handler invoked whenever any client receives a 401 response.
- *
- * The handler is responsible for clearing in-memory tokens, clearing financial
- * caches and routing the user back to the login screen. It is invoked
- * asynchronously on a microtask so callers can still observe the rejected
- * promise themselves.
- */
 export function setUnauthorizedHandler(handler: UnauthorizedHandler | null): void {
   unauthorizedHandler = handler;
 }
@@ -128,21 +106,13 @@ export interface RequestOptions extends Omit<RequestInit, 'body' | 'headers'> {
   method?: string;
   query?: Record<string, string | number | boolean | null | undefined>;
   headers?: Record<string, string | undefined>;
-  /** Plain JS value JSON-encoded into the body. Cannot be combined with formData. */
   json?: unknown;
-  /** FormData payload. Cannot be combined with json. */
   formData?: FormData;
-  /** Bearer access token to authenticate the request. */
   accessToken?: string | null;
-  /** ETag to send as `If-Match` for optimistic concurrency. */
   ifMatch?: string | null;
-  /** Send an `Idempotency-Key` header for safe retries (writes only). */
   idempotencyKey?: string | null;
-  /** Timeout in milliseconds. Defaults to 15s. */
   timeoutMs?: number;
-  /** Default error code prefix used when the server omits a `code`. */
   defaultErrorCode?: string;
-  /** Disable invoking the unauthorized handler for this request (auth flows). */
   suppressUnauthorizedHandler?: boolean;
 }
 
@@ -248,7 +218,6 @@ export async function apiFetch<T>(options: RequestOptions): Promise<T> {
     return (await response.json()) as T;
   }
 
-  // Fall back to text for non-JSON success responses; rare in this API surface.
   return (await response.text()) as unknown as T;
 }
 

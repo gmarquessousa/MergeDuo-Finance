@@ -27,7 +27,6 @@
 
 README.md
 
-# Configuration and secrets must come from pipeline/ACA env or secrets
 **/appsettings.Development.json
 **/appsettings.Local.json
 **/secrets.json

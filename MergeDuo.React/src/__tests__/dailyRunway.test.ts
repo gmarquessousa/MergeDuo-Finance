@@ -33,8 +33,6 @@ describe('resolveDailyRunway', () => {
       ],
     });
 
-    // Worst covered day: Aug 1-3 -> -450 + 100 = -350
-    // Last covered day:  Aug 6   ->  700 + 100 =  800
     expect(result.ready).toBe(true);
     expect(result.minProjectedTotal).toBe(-350);
     expect(result.minProjectedDate).toBe('2026-08-01');
@@ -61,7 +59,6 @@ describe('resolveDailyRunway', () => {
       ],
     });
 
-    // Lowest day in the horizon is Aug 1 (first day to reach the min): 850 + 100 = 950.
     expect(result.ready).toBe(true);
     expect(result.minProjectedTotal).toBe(950);
     expect(result.remainingTotal).toBe(950);

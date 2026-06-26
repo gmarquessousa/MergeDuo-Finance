@@ -68,7 +68,6 @@ export function SimulatorView({ year, monthIdx, onBack }: Props) {
 
   const visibleMonths = Array.from({ length: 12 - startMonthIdx }, (_, i) => startMonthIdx + i);
 
-  // Extended table: covers full installment periods even if they go beyond Dec of current year
   const tableEndAbsMonth = useMemo(() => {
     let end = year * 12 + 11;
     for (const e of entries) {
@@ -123,7 +122,6 @@ export function SimulatorView({ year, monthIdx, onBack }: Props) {
   const projectedEndYear = projection.patrimonioProjectedByMonth[11];
   const totalDelta = projectedEndYear - baselineEndYear;
 
-  // Build sparkline data: from startMonthIdx → 11, both baseline and projected.
   const chart = useMemo(() => {
     const w = 320;
     const h = 80;
@@ -187,7 +185,6 @@ export function SimulatorView({ year, monthIdx, onBack }: Props) {
         </div>
       </div>
 
-      {/* Resumo */}
       <div className="mx-4 sm:mx-5 md:mx-8 lg:mx-10 rounded-2xl bg-paper-card border border-paper-line p-4 shadow-soft-sm">
         <div className="text-[11px] uppercase tracking-wider text-ink-muted">
           Patrimônio projetado em dez/{year}
@@ -208,7 +205,6 @@ export function SimulatorView({ year, monthIdx, onBack }: Props) {
           )}
         </div>
 
-        {/* Sparkline */}
         {visibleMonths.length > 1 && (
           <div className="mt-3">
             <svg viewBox={`0 0 ${chart.w} ${chart.h}`} className="w-full h-20">
@@ -239,7 +235,6 @@ export function SimulatorView({ year, monthIdx, onBack }: Props) {
         )}
       </div>
 
-      {/* Lista de simulações */}
       <div className="mt-4 mx-4 sm:mx-5 md:mx-8 lg:mx-10">
         <div className="flex items-center justify-between mb-2">
           <div className="text-[11px] uppercase tracking-wider text-ink-muted font-medium">
@@ -284,7 +279,6 @@ export function SimulatorView({ year, monthIdx, onBack }: Props) {
         </button>
       </div>
 
-      {/* Tabela mês a mês */}
       <div className="mt-5 mx-4 sm:mx-5 md:mx-8 lg:mx-10">
         <div className="text-[11px] uppercase tracking-wider text-ink-muted font-medium">
           Mês a mês

@@ -7,10 +7,6 @@ interface Props {
   strokeWidth?: number;
 }
 
-/**
- * Inline SVG icon for each transaction category.
- * Uses currentColor so callers can tint via Tailwind text color utilities.
- */
 export function CategoryIcon({ category, size = 16, className = '', strokeWidth = 2 }: Props) {
   const common = {
     width: size,
@@ -27,7 +23,6 @@ export function CategoryIcon({ category, size = 16, className = '', strokeWidth 
 
   switch (category) {
     case 'income':
-      // Arrow rising into a wallet — represents money coming in
       return (
         <svg {...common}>
           <path d="M7 14l5-5 5 5" />
@@ -46,7 +41,6 @@ export function CategoryIcon({ category, size = 16, className = '', strokeWidth 
       );
 
     case 'loan':
-      // Banknote with dollar sign — represents borrowed money
       return (
         <svg {...common}>
           <rect x="2.5" y="6" width="19" height="12" rx="2" />
@@ -57,7 +51,6 @@ export function CategoryIcon({ category, size = 16, className = '', strokeWidth 
       );
 
     case 'fixed_expense':
-      // Calendar with a recurring arrow — recurring/fixed expense
       return (
         <svg {...common}>
           <rect x="3" y="5" width="18" height="16" rx="2" />
@@ -69,7 +62,6 @@ export function CategoryIcon({ category, size = 16, className = '', strokeWidth 
       );
 
     case 'variable_expense':
-      // Shopping bag — variable/everyday spending
       return (
         <svg {...common}>
           <path d="M5 8h14l-1.2 11a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8z" />
@@ -78,7 +70,6 @@ export function CategoryIcon({ category, size = 16, className = '', strokeWidth 
       );
 
     case 'investment':
-      // Trending-up chart with bars
       return (
         <svg {...common}>
           <path d="M3 17l6-6 4 4 8-8" />

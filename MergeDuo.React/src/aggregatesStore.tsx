@@ -262,8 +262,8 @@ export function AggregatesProvider({ children }: { children: ReactNode }) {
         aggregatesCacheKey(pending.userId),
         JSON.stringify(createPersistedAggregatesState(pending.state)),
       );
-    } catch {
-      // Ignore quota/privacy mode failures and keep the in-memory state.
+    } catch (error) {
+      void error;
     }
   }, []);
 

@@ -1,11 +1,9 @@
-# Build artifacts
 **/bin/
 **/obj/
 **/out/
 **/publish/
 **/TestResults/
 
-# IDE / VCS
 **/.vs/
 **/.vscode/
 **/.idea/
@@ -15,15 +13,12 @@
 **/*.user
 **/*.suo
 
-# Tests are not needed for the runtime image
 tests/
 
-# Project notes / docs
 AI/
 README.md
 **/*.md
 
-# Local-only configuration (must not leak into the image; use ACA secrets/env instead)
 **/appsettings.Development.json
 **/appsettings.Local.json
 **/secrets.json

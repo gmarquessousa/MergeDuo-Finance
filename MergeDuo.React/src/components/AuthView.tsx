@@ -74,7 +74,6 @@ export function AuthView({
 
     function scheduleRefresh(expiresInSeconds: number) {
       clearRefreshTimer();
-      // Renew 60s before expiry, with a sane floor (15s) and ceiling (~30 min).
       const targetMs = Math.min(Math.max(expiresInSeconds - 60, 15), 30 * 60) * 1000;
       refreshTimerRef.current = setTimeout(() => {
         if (cancelled) return;
@@ -165,7 +164,6 @@ export function AuthView({
               return;
             }
 
-            // Consume so a duplicate callback cannot reuse the same nonce.
             challengeRef.current = null;
             clearRefreshTimer();
             setStatus('submitting');
@@ -243,7 +241,6 @@ export function AuthView({
 
   return (
     <div className="relative min-h-screen flex flex-col overflow-hidden" style={{ background: 'rgb(var(--bg-app))' }}>
-      {/* Ambient gradient glow backdrop */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10"
@@ -252,14 +249,12 @@ export function AuthView({
             'radial-gradient(60% 45% at 85% -5%, rgba(10,132,255,0.16), transparent 70%), radial-gradient(55% 40% at 0% 105%, rgba(94,92,230,0.14), transparent 70%)',
         }}
       />
-      {/* Top brand bar */}
       <div className="px-6 pt-10 pb-2 flex items-center gap-2">
         <BrandMark />
         <span className="text-sm font-semibold tracking-tight text-ink">Merge Duo</span>
       </div>
 
       <div className="flex-1 flex flex-col justify-center px-5 pb-10">
-        {/* Hero mark + text */}
         <div className="mb-8">
           <div className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-3xl hero-surface shadow-hero animate-scale-in">
             <span className="scale-125">
@@ -274,7 +269,6 @@ export function AuthView({
           </p>
         </div>
 
-        {/* Login card */}
         <div className="rounded-4xl bg-paper-card/90 backdrop-blur-xl border border-paper-line/70 p-6 shadow-elevated animate-slide-up">
           <div
             ref={googleButtonRef}

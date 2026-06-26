@@ -13,22 +13,22 @@ export interface Transaction {
   userId?: string;
   yearMonth?: string;
   kind?: TransactionKind;
-  date: string; // ISO yyyy-mm-dd — for credit_card+cardId, this is the cash-impact (due) date
+  date: string;
   category: TransactionCategory;
   description: string;
-  amount: number; // always positive; kind determines sign
+  amount: number;
   currency?: string;
-  owner?: string; // display name; undefined = current user
+  owner?: string;
   ownerLabel?: string;
   fixedRuleId?: string;
-  projected?: boolean; // true when materialized from a FixedRule, not yet emitted by Scheduler
-  cardId?: string; // linked registered card (credit_card category only)
-  cardTitle?: string; // title of the linked card (populated for partner cards not in local store)
-  purchaseDate?: string; // ISO yyyy-mm-dd — original purchase date for credit_card txs
+  projected?: boolean;
+  cardId?: string;
+  cardTitle?: string;
+  purchaseDate?: string;
   installments?: {
-    index: number; // 1-based
+    index: number;
     total: number;
-    groupId: string; // shared by all installments of a purchase
+    groupId: string;
   };
   tags?: string[];
   notes?: string;
@@ -54,10 +54,10 @@ export interface FinanceUser {
 export interface Card {
   id: string;
   title: string;
-  closingDay: number; // 1-31 — invoice closing day
-  dueDay: number; // 1-31 — invoice due day
+  closingDay: number;
+  dueDay: number;
   currency: string;
-  limit?: number; // optional credit limit (R$)
+  limit?: number;
   createdAt: string;
   updatedAt: string;
   etag?: string | null;
@@ -94,10 +94,10 @@ export interface FixedTransactionRule {
   description: string;
   amount: number;
   schedule: FixedTransactionSchedule;
-  startsAt: string; // ISO yyyy-mm-dd, usually first day of the start month
+  startsAt: string;
   endsAt?: string | null;
   active: boolean;
-  cardId?: string | null; // required when category === 'credit_card'
+  cardId?: string | null;
   tags?: string[];
   lastRunAt?: string | null;
   nextRunAt?: string | null;
@@ -129,6 +129,5 @@ export function signedAmount(t: Transaction): number {
   const k = CATEGORY_META[t.category].kind;
   if (k === 'in') return t.amount;
   if (k === 'out') return -t.amount;
-  // investment: leaves cash, becomes invested patrimony
   return -t.amount;
 }

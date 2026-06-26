@@ -96,7 +96,6 @@ npm run dev
 ```powershell
 dotnet run --launch-profile https --project MergeDuo.Microservices/MergeDuo.Identity/src/MergeDuo.Identity.Api
 dotnet run --launch-profile https --project MergeDuo.Microservices/MergeDuo.Transactions/src/MergeDuo.Transactions.Api
-# ...demais serviços
 ```
 
 O app abre em http://localhost:5173. O passo a passo completo — criar o cliente
@@ -171,15 +170,6 @@ Visão geral do deploy no Azure (guia completo em
 
 Detalhes da infraestrutura em
 [MergeDuo.Terraform/README.md](MergeDuo.Terraform/README.md).
-
-## Desenvolvimento com IA
-
-Este projeto foi desenvolvido com o apoio de ferramentas de inteligência
-artificial, usadas apenas como auxílio à implementação. As **tecnologias e a arquitetura não foram escolhidas nem criadas por IA** — essas
-decisões foram exclusivamente humanas.
-
-Em todas as etapas, o código e a documentação passaram por validação,
-verificação de acurácia, correções e análise humana para assegurar a qualidade, a coerência e a confiabilidade do resultado final.
 
 ## Licença
 

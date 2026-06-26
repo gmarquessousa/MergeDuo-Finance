@@ -93,7 +93,6 @@ export function AnnualView({ year }: Props) {
       .sort((a, b) => b.total - a.total);
   }, [yearTotals.byCategory]);
 
-  // Chart: accumulated per month
   const chart = useMemo(() => {
     const values = months.map((m) => displayPatrimonioFor(m));
     const w = 300;
@@ -141,7 +140,6 @@ export function AnnualView({ year }: Props) {
       )}
 
       <div className="px-4 space-y-4 sm:px-5 md:grid md:grid-cols-2 md:items-start md:gap-4 md:space-y-0 md:px-8 lg:px-10">
-        {/* Patrimônio chart */}
         <Card className="md:col-span-2">
           <div className="flex items-center justify-between mb-1">
             <div className="text-[11px] uppercase tracking-wider text-ink-muted">
@@ -167,7 +165,6 @@ export function AnnualView({ year }: Props) {
             {chart.area && <polyline points={chart.area} fill="url(#yearGrad)" stroke="none" />}
             {chart.points && <polyline points={chart.points} fill="none" stroke="rgb(var(--ink))" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />}
           </svg>
-          {/* Month ticks */}
           <div className="flex justify-between mt-1 px-0">
             {months.map((month) => (
               <span
@@ -184,7 +181,6 @@ export function AnnualView({ year }: Props) {
           </div>
         </Card>
 
-        {/* Entradas vs Saídas mês a mês */}
         <Card className="md:col-span-2">
           <div className="flex items-center justify-between mb-3">
             <div className="text-[11px] uppercase tracking-wider text-ink-muted">
@@ -202,7 +198,6 @@ export function AnnualView({ year }: Props) {
           <MonthlyBarChart months={months} year={year} />
         </Card>
 
-        {/* Annual KPIs */}
         <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 md:col-span-2">
           <KpiCard
             label="Reserva de emergência"
@@ -218,7 +213,6 @@ export function AnnualView({ year }: Props) {
           />
         </div>
 
-        {/* Monthly breakdown */}
         <Card className="md:col-span-2">
           <div className="flex items-center justify-between mb-3">
             <div className="text-[11px] uppercase tracking-wider text-ink-muted">
@@ -280,7 +274,6 @@ export function AnnualView({ year }: Props) {
               );
             })}
           </div>
-          {/* Column labels */}
           <div className="grid grid-cols-[1fr_auto_auto_16px] gap-3 mt-2 pt-2 border-t border-paper-line items-center">
             <div />
             <div className="text-[10px] uppercase tracking-wider text-ink-muted text-right">Saldo</div>
@@ -291,7 +284,6 @@ export function AnnualView({ year }: Props) {
           </div>
         </Card>
 
-        {/* Expense breakdown */}
         <Card>
           <div className="flex items-center justify-between mb-3">
             <div className="text-[11px] uppercase tracking-wider text-ink-muted">
@@ -337,7 +329,6 @@ export function AnnualView({ year }: Props) {
           )}
         </Card>
 
-        {/* Top expenses of the year */}
         {topTransactions.length > 0 && (
           <Card>
             <div className="text-[11px] uppercase tracking-wider text-ink-muted mb-2">
@@ -451,14 +442,12 @@ function MonthDetails({ month }: { month: MonthSummary }) {
 
   return (
     <div className="pb-3 pt-1 space-y-3">
-      {/* Mini stats */}
       <div className="grid grid-cols-3 gap-2">
         <MiniStat label="Entradas" value={month.entradas} tone="pos" />
         <MiniStat label="Saídas"   value={month.saidas}   tone="neg" />
         <MiniStat label="Aportes"  value={month.aportes}  tone="invest" />
       </div>
 
-      {/* Breakdown */}
       {breakdown.length > 0 && (
         <div className="space-y-2.5">
           <div className="text-[10px] uppercase tracking-wider text-ink-muted">
@@ -493,7 +482,6 @@ function MonthDetails({ month }: { month: MonthSummary }) {
         </div>
       )}
 
-      {/* Top expenses of month */}
       {topExpenses.length > 0 && (
         <div>
           <div className="text-[10px] uppercase tracking-wider text-ink-muted mb-1">
@@ -564,7 +552,6 @@ function MonthlyBarChart({ months, year }: { months: MonthSummary[]; year: numbe
     ...months.map((m) => Math.max(m.entradas, m.saidas)),
     1,
   );
-  // Pad with placeholders so all 12 columns line up even if year started later
   const padded: (MonthSummary | { monthIdx: number; placeholder: true })[] = [];
   const firstMonth = months[0]?.monthIdx ?? 0;
   for (let i = 0; i < firstMonth; i++) {
